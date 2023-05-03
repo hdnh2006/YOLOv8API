@@ -6,6 +6,10 @@
 
 ![Screen GIF](assets/screen.gif)
 
+This code is based on the YOLOv5 from Ultralytics and it has all the functionalities that the original code has:
+- Different source: images, videos, webcam, RTSP cameras.
+- All the weights are supported: TensorRT, Onnx, DNN, openvino.
+
 ## Requirements
 
 Python 3.8 or later with all [requirements.txt](requirements.txt) dependencies installed, including `torch>=1.7`. To install run:
@@ -96,6 +100,6 @@ The API will return the image labeled.
 
 ## About me and contact
 
-This code is based on the YOLOv8 from ultralytics and it has been modified by Henry Navarro
+This code is based on the YOLOv5 from Ultralytics and it has been modified by Henry Navarro
  
 If you want to know more about me, please visit my blog: henrynavarro.org.
