@@ -10,6 +10,10 @@ This code is based on the YOLOv5 from Ultralytics and it has all the functionali
 - Different source: images, videos, webcam, RTSP cameras.
 - All the weights are supported: TensorRT, Onnx, DNN, openvino.
 
+The API can be called in an interactive way, and also as a single API called from terminal. 
+
+
+
 ## Requirements
 
 Python 3.8 or later with all [requirements.txt](requirements.txt) dependencies installed, including `torch>=1.7`. To install run:
@@ -93,9 +97,27 @@ Open the application in any browser 0.0.0.0:5000 and upload your image or video 
 
 ## How to use the API
 
+### Interactive way
 Just open your favorite browser and go to 0.0.0.0:5000 and intuitevely load the image you want to label and press the buttom "Upload image".
 
-The API will return the image labeled.
+The API will return the image or video labeled.
+
+### Call from terminal or python program
+The `client.py` code provides several example about how the API can be called. A very common way to do it is to call a public image from url and to get the coordinates of the bounding boxes:
+
+```python
+import requests
+
+resp = requests.get("http://0.0.0.0:5000/detect?url=https://atlassafetysolutions.com/wp/wp-content/uploads/2019/06/ppe.jpeg&save_txt=T",
+                    verify=False)
+print(resp.content)
+
+```
+And you will get a json with the following data:
+
+```
+b'{"results": [{"class": 72, "x": 0.647187, "y": 0.495779, "w": 0.421875, "h": 0.991557, "conf": null}, {"class": 0, "x": 0.371563, "y": 0.497655, "w": 0.525625, "h": 0.982176, "conf": null}]}'
+```
 
 
 ## About me and contact
