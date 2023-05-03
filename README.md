@@ -4,6 +4,8 @@
 
 # Yolov8 Flask API for detection and segmentation
 
+![Screen GIF](assets/screen.gif)
+
 ## Requirements
 
 Python 3.8 or later with all [requirements.txt](requirements.txt) dependencies installed, including `torch>=1.7`. To install run:
@@ -82,9 +84,8 @@ Run:
 ```bash
 $ python detect_api.py --device cpu # to run into cpu (by default is gpu)
 ```
-Open the application in any browser 0.0.0.0:5000 and upload your image or video as is shown in video:
+Open the application in any browser 0.0.0.0:5000 and upload your image or video as is shown in video above.
 
-![Screen GIF](assets/screen.gif)
 
 ## How to use the API
 
