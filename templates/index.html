@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YOLOv8 Flask API</title>
+  <!-- CSS only -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <link rel="shortcut icon" href="https://cdn.icon-icons.com/icons2/3913/PNG/512/flask_logo_icon_248540.png" type="image/x-icon">
+  <style>
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      margin: 0;
+    }
+
+    #container {
+      display: block;
+      margin: auto;
+      width: 100%;
+    }
+
+    .img-container,
+    img {
+      display: block;
+      margin-top: 32px;
+      width: 50%;
+      min-width: 360px;
+    }
+
+    #output {
+      background-color: #1f3569;
+      padding: 15px;
+    }
+
+    .uploadOuter {
+      text-align: left;
+      padding: 20px;
+      margin-top: 64px;
+    }
+
+    .uploadOuter strong {
+      padding: 0 10px;
+    }
+
+    .dragBox {
+      width: 500px;
+      height: 200px;
+      margin: 32px auto;
+      position: relative;
+      text-align: center;
+      font-weight: bold;
+      line-height: 200px;
+      color: #999;
+      border: 2px dashed #ccc;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s;
+    }
+
+    .dragBox input[type="file"] {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      opacity: 0;
+      top: 0;
+      left: 0;
+    }
+
+    .draging {
+      transform: scale(1.1);
+    }
+
+    #preview {
+      display: flex;
+      justify-content: center;
+    }
+    #preview img {
+      max-width: 100%
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 6px 12px;
+      margin-bottom: 0;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.42857143;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      -ms-touch-action: manipulation;
+      touch-action: manipulation;
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      background-image: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background-color: #1f3569;
+      ;
+    }
+
+    #upload-btn {
+      text-align: center;
+      margin: 32px auto;
+      width: 200px;
+      height: 48px;
+      display: none;
+    }
+
+    #upload-btn[disabled] {
+      opacity: .6;
+      cursor: progress;
+    }
+
+    p#preview-text {
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .form-group {
+      max-width: 400px;
+      margin-top: 32px;
+      margin: 32px auto;
+      margin-top: 32px;
+    }
+
+    #progress-container {
+      display: none;
+    }
+
+    .progress-bar {
+      background-color: #1f3569;
+    }
+    footer .disclaimer{
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="img-container">
+            <img id="logo_flask" src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Flask_logo.svg" alt="">
+            <br />
+          </div>
+        </div>
+        <div class="col-md-4 offset-md-4">
+        </div>
+      </div>
+    </div>
+  </header>
+  <main id="container">
+    <form id="upload-form" class="upl-container" method="POST" action="detect" enctype="multipart/form-data">
+      <div class="uploadOuter">
+        <div class="container">
+          <div class="row">
+            <div class="col-m6 offset-m3">
+              <h4 class="title text-center">YOLOv8 Flask API for detection and segmentation</h4>
+              <p class="text-left">
+                This API is based on the YOLOv5 code from Ultralytics and it has been adapted by <a href="https://github.com/hdnh2006/">Henry Navaro</a>.
+                <p>Files supported are the common formats of images and videos that YOLOv8 also support: ('bmp', 'jpeg', 'jpg', 'webp',... and 'avi', 'gif', 'mp4', ...)<p>
+                <p>The algorithm will return to you a labeled image with all the objects detected/segmented by your model.<p>
+                <p>Instructions:<p>
+                <p>1) Drag your file or use the button "Select file"<p>
+                <p>2) Press "Upload file"<p>
+              </p>
+            </div>
+          </div>
+        </div>
+        <span class="dragBox">
+          Drag and drop file here
+          <input type="file" onChange="dragNdrop(event)" name="myfile" ondragover="drag()" ondrop="drop()"
+            id="myfile" />
+          <!-- id="myfile" accept="video/*,image/*" /> -->
+        </span>
+        <div style="text-align: center;">
+        <strong>OR</strong>
+        <label for="myfile" class="btn btn-primary">Select file</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div id="progress-container" class="progress">
+          <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+            aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+        </div>
+      </div>
+
+      <div id="preview">
+        <p id="preview-text"></p>
+        <img id="preview-img" src="" alt="">
+      </div>
+
+      <input type="submit" id="upload-btn" value="Upload file" class="btn btn-primary" />
+    </form>
+  </main>
+  <footer>
+    <div class="container">
+      <row>
+        <col-10>
+          <p class="text-left">
+            <p>If you want to know more about me, please visit my blog: <a href="https://henrynavarro.org">henrynavarro.org</a><p>
+            <p>If you think this code has been helpful for you, you can invite me a coffee: <a href="https://www.buymeacoffee.com/hdnh2006">https://www.buymeacoffee.com/hdnh2006</a><p>
+          </p>
+        </col-10>
+      </row>
+    </div>
+  </footer>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script>
+    AWS.config.update({
+    });
+  </script>
+  <script>
+    "use strict";
+    const uploadBtn = document.getElementById('upload-btn')
+    var fileName,
+      preview = document.getElementById("preview"),
+      previewImg = document.getElementById("preview-img"),
+      previewtext = document.getElementById("preview-text");
+    function dragNdrop(event) {
+      let file = event.target.files[0]
+      if (!file)
+        return
+      fileName = URL.createObjectURL(file);
+      previewImg.setAttribute("src", fileName);
+      uploadBtn.style.display = 'block';
+      previewtext.innerHTML = `File selected: <b>${file.name}</b>`
+    }
+    function drag() {
+      document.getElementById('myfile').parentNode.className = 'draging dragBox';
+    }
+    function drop() {
+      document.getElementById('myfile').parentNode.className = 'dragBox';
+    }
+    function handleUpload() {
+      uploadBtn.disabled = true;
+      const local_server_url = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
+    }
+  </script>
+</body>
+
+</html>
