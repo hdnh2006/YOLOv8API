@@ -8,13 +8,15 @@
 
 ![Screen GIF](assets/screen.gif)
 
-This code is based on the YOLOv5 from Ultralytics and it has all the functionalities that the original code has:
+This code is based on the YOLOv8 code from Ultralytics and it has all the functionalities that the original code has:
 - Different source: images, videos, webcam, RTSP cameras.
 - All the weights are supported: TensorRT, Onnx, DNN, openvino.
 
-The API can be called in an interactive way, and also as a single API called from terminal. 
+The API can be called in an interactive way, and also as a single API called from terminal and it supports all the tasks provided by YOLOv8 (detection, segmentation, classification and pose estimation) in the same API!!!!
 
+All [Models](https://github.com/ultralytics/ultralytics/tree/main/ultralytics/cfg/models) download automatically from the latest Ultralytics [release](https://github.com/ultralytics/assets/releases) on first use.
 
+<img width="1024" src="https://raw.githubusercontent.com/ultralytics/assets/main/im/banner-tasks.png">
 
 ## Requirements
 
@@ -24,13 +26,13 @@ Python 3.8 or later with all [requirements.txt](requirements.txt) dependencies i
 $ pip3 install -r requirements.txt
 ```
 
-## Object detection API
+## [Detection](https://docs.ultralytics.com/tasks/detect), [Segmentation](https://docs.ultralytics.com/tasks/segment), [Classification](https://docs.ultralytics.com/tasks/classify) and [Pose Estimation](https://docs.ultralytics.com/tasks/pose) models pretrained on the [COCO](https://docs.ultralytics.com/datasets/detect/coco) in the same API
 
-`detect_api.py` can deal with several sources and can run into the cpu, but it is highly recommendable to run in gpu.
+`predict_api.py` can deal with several sources and can run into the cpu, but it is highly recommendable to run in gpu.
 
 ```bash
 Usage - sources:
-    $ python detect_api.py --weights yolov8s.pt --source 0                               # webcam
+    $ python predict_api.py --weights yolov8s.pt --source 0                              # webcam
                                                          img.jpg                         # image
                                                          vid.mp4                         # video
                                                          screen                          # screenshot
@@ -40,8 +42,9 @@ Usage - sources:
                                                          'path/*.jpg'                    # glob
                                                          'https://youtu.be/Zgi9g1ksQHc'  # YouTube
                                                          'rtsp://example.com/media.mp4'  # RTSP, RTMP, HTTP stream
+
 Usage - formats:
-    $ python detect_api.py --weights yolov8s.pt                 # PyTorch
+    $ python predict_api.py --weights yolov8s.pt                # PyTorch
                                      yolov8s.torchscript        # TorchScript
                                      yolov8s.onnx               # ONNX Runtime or OpenCV DNN with --dnn
                                      yolov8s_openvino_model     # OpenVINO
@@ -52,37 +55,12 @@ Usage - formats:
                                      yolov8s.tflite             # TensorFlow Lite
                                      yolov8s_edgetpu.tflite     # TensorFlow Edge TPU
                                      yolov8s_paddle_model       # PaddlePaddle
-```
 
-
-## Instance segmentation API
-
-`segment_api.py` can deal with several sources and can run into the cpu, but it is highly recommendable to run in gpu.
-
-```bash
-Usage - sources:
-    $ python segment_api.py --weights yolov8s-seg.pt --source 0                               # webcam
-                                                                  img.jpg                         # image
-                                                                  vid.mp4                         # video
-                                                                  screen                          # screenshot
-                                                                  path/                           # directory
-                                                                  list.txt                        # list of images
-                                                                  list.streams                    # list of streams
-                                                                  'path/*.jpg'                    # glob
-                                                                  'https://youtu.be/Zgi9g1ksQHc'  # YouTube
-                                                                  'rtsp://example.com/media.mp4'  # RTSP, RTMP, HTTP stream
-Usage - formats:
-    $ python segment_api.py --weights yolov8s-seg.pt                 # PyTorch
-                                          yolov8s-seg.torchscript        # TorchScript
-                                          yolov8s-seg.onnx               # ONNX Runtime or OpenCV DNN with --dnn
-                                          yolov8s-seg_openvino_model     # OpenVINO
-                                          yolov8s-seg.engine             # TensorRT
-                                          yolov8s-seg.mlmodel            # CoreML (macOS-only)
-                                          yolov8s-seg_saved_model        # TensorFlow SavedModel
-                                          yolov8s-seg.pb                 # TensorFlow GraphDef
-                                          yolov8s-seg.tflite             # TensorFlow Lite
-                                          yolov8s-seg_edgetpu.tflite     # TensorFlow Edge TPU
-                                          yolov8s-seg_paddle_model       # PaddlePaddle
+Usage - tasks:
+    $ python predict_api.py --weights yolov8s.pt                # Detection
+                                     yolov8s-seg.pt             # Segmentation
+                                     yolov8s-cls.pt             # Classification
+                                     yolov8s-pose.pt            # Pose Estimation
 ```
 
 ## Interactive implementation implemntation
@@ -110,7 +88,7 @@ The `client.py` code provides several example about how the API can be called. A
 ```python
 import requests
 
-resp = requests.get("http://0.0.0.0:5000/detect?url=https://atlassafetysolutions.com/wp/wp-content/uploads/2019/06/ppe.jpeg&save_txt=T",
+resp = requests.get("http://0.0.0.0:5000/predict?source=https://atlassafetysolutions.com/wp/wp-content/uploads/2019/06/ppe.jpeg&save_txt=T",
                     verify=False)
 print(resp.content)
 
@@ -118,12 +96,12 @@ print(resp.content)
 And you will get a json with the following data:
 
 ```
-b'{"results": [{"class": 72, "x": 0.647187, "y": 0.495779, "w": 0.421875, "h": 0.991557, "conf": null}, {"class": 0, "x": 0.371563, "y": 0.497655, "w": 0.525625, "h": 0.982176, "conf": null}]}'
+b'{"results": [{"name": "person", "class": 0, "confidence": 0.9284878969192505, "box": {"x1": 174.23370361328125, "y1": 6.4221954345703125, "x2": 1014.720458984375, "y2": 1053.7127685546875}}, {"name": "refrigerator", "class": 72, "confidence": 0.3910899758338928, "box": {"x1": 697.6565551757812, "y1": 0.0, "x2": 1372.587646484375, "y2": 1056.9697265625}}]}'
 ```
 
 
 ## About me and contact
 
-This code is based on the YOLOv5 from Ultralytics and it has been modified by Henry Navarro
+This code is based on the YOLOv8 code from Ultralytics and it has been modified by Henry Navarro
  
-If you want to know more about me, please visit my blog: henrynavarro.org.
+If you want to know more about me, please visit my blog: [henrynavarro.org](https://henrynavarro.org).

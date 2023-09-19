@@ -29,7 +29,7 @@ def update_options(request):
     # GET parameters
     if request.method == 'GET':
         #all_args = request.args # TODO: get all parameters in one line
-        source = request.args.get('url')
+        source = request.args.get('source')
         save_txt = request.args.get('save_txt')
 
     
@@ -38,7 +38,7 @@ def update_options(request):
         json_data = request.get_json() #Get the POSTed json
         json_data = json.dumps(json_data) # API receive a dictionary, so I have to do this to convert to string
         dict_data = json.loads(json_data) # Convert json to dictionary 
-        source = dict_data['url']
+        source = dict_data['source']
         save_txt = dict_data.get('save_txt', None)        
     
-    return source, save_txt
+    return source, bool(save_txt)
