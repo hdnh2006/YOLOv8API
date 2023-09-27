@@ -57,7 +57,10 @@ def predict(opt):
 
 @app.route('/')
 def index():
-    """Video streaming home page."""
+    """
+    Video streaming home page.
+    """
+    
     return render_template('index.html')
 
 
@@ -67,7 +70,7 @@ def video_feed():
         opt.source, opt.save_txt = update_options(request)
     else:
         uploaded_file = request.files['myfile']
-        source = str(uploaded_file.filename)
+        source = Path(__file__).parent / raw_data / uploaded_file.filename
         uploaded_file.save(source)
         opt.save_txt = None
         opt.source = source
@@ -106,6 +109,7 @@ if __name__ == '__main__':
     parser.add_argument('--project', default=ROOT / 'runs/detect', help='save results to project/name')
     parser.add_argument('--name', default='exp', help='save results to project/name')
     parser.add_argument('--dnn', action='store_true', help='use OpenCV DNN for ONNX inference')
+    parser.add_argument('--raw_data', '--raw-data', default=ROOT / 'data/raw', help='save raw images to data/raw')
     parser.add_argument('--port', default=5000, type=int, help='port deployment')
     opt, unknown = parser.parse_known_args()
 
@@ -115,6 +119,11 @@ if __name__ == '__main__':
     # Get por to deploy
     port = opt.port
     delattr(opt, 'port')
+    
+    # Create path for raw data
+    raw_data = Path(opt.raw_data)
+    raw_data.mkdir(parents=True, exist_ok=True)
+    delattr(opt, 'raw_data')
     
     # Load model (Ensemble is not supported)
     model = YOLO(str(opt.model))
