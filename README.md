@@ -74,10 +74,10 @@ Just open your favorite browser and go to 0.0.0.0:5000 and intuitevely load the 
 
 The API will return the image or video labeled.
 
-![Alt text(assets/zidane_bbox.png)
+![Alt text](assets/zidane_bbox.png)
 
 All tasks are supported, for pose estimation, resutls should be as follow:
-![Zidane pose(assets/zidane_pose.png)
+![Zidane pose](assets/zidane_pose.png)
 
 
 ### Call from terminal or python script
