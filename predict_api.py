@@ -66,16 +66,24 @@ def index():
 
 @app.route('/predict', methods=['GET', 'POST'])
 def video_feed():
-    if not request.files.getlist('myfile'):
+    if request.method == 'POST':
+        uploaded_file = request.files.get('myfile')
+        save_txt = request.form.get('save_txt', 'F')  # Default to 'F' if save_txt is not provided
+
+        if uploaded_file:
+            source = Path(__file__).parent / raw_data / uploaded_file.filename
+            uploaded_file.save(source)
+            opt.source = source
+        else:
+            opt.source, _ = update_options(request)
+            
+        opt.save_txt = True if save_txt == 'T' else False
+            
+    elif request.method == 'GET':
         opt.source, opt.save_txt = update_options(request)
-    else:
-        uploaded_file = request.files['myfile']
-        source = Path(__file__).parent / raw_data / uploaded_file.filename
-        uploaded_file.save(source)
-        opt.save_txt = None
-        opt.source = source
 
     return Response(predict(opt), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 
 if __name__ == '__main__':
@@ -130,4 +138,4 @@ if __name__ == '__main__':
 
     # Run app
     app.run(host='0.0.0.0', port=port, debug=False) # Don't use debug=True, model will be loaded twice (https://stackoverflow.com/questions/26958952/python-program-seems-to-be-running-twice)
-
+    
