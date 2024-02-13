@@ -10,7 +10,9 @@
   </a>
 </div>
 
-![Screen GIF](assets/screen.gif)
+<p align="center">
+  <img src="assets/lunar_lander.gif" />
+</p>
 
 This code is based on the YOLOv8 code from Ultralytics and it has all the functionalities that the original code has:
 - Different source: images, videos, webcam, RTSP cameras.
