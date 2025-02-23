@@ -2,7 +2,7 @@
   <img width="450" src="assets/Flask_logo.svg">
 </div>
 
-# Yolov8 Flask API for detection and segmentation
+# Ultralytics Flask API for detection and segmentation
 
 <div align="center">
   <a href="https://www.buymeacoffee.com/hdnh2006" target="_blank">
@@ -12,11 +12,11 @@
 
 ![Screen GIF](assets/screen.gif)
 
-This code is based on the YOLOv8 code from Ultralytics and it has all the functionalities that the original code has:
+This code is based on the Ultralytics repo and it has all the functionalities that the original code has:
 - Different source: images, videos, webcam, RTSP cameras.
 - All the weights are supported: TensorRT, Onnx, DNN, openvino.
 
-The API can be called in an interactive way, and also as a single API called from terminal and it supports all the tasks provided by YOLOv8 (detection, segmentation, classification and pose estimation) in the same API!!!!
+The API can be called in an interactive way, and also as a single API called from terminal and it supports all the tasks provided by Ultralytics (detection, segmentation, classification and pose estimation) in the same API!!!!
 
 All [models](https://github.com/ultralytics/ultralytics/tree/main/ultralytics/cfg/models) download automatically from the latest Ultralytics [release](https://github.com/ultralytics/assets/releases) on first use.
 
@@ -113,6 +113,6 @@ b'{"results": [{"name": "person", "class": 0, "confidence": 0.9490957260131836, 
 
 ## About me and contact
 
-This code is based on the YOLOv8 code from Ultralytics and it has been modified by Henry Navarro
+This code is based on the Ultralytics code and it has been modified by Henry Navarro
  
 If you want to know more about me, please visit my blog: [henrynavarro.org](https://henrynavarro.org).
